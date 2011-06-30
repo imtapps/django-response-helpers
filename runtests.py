@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import sys
-from os.path import dirname, abspath
 from optparse import OptionParser
 
 from django.conf import settings
@@ -34,8 +33,7 @@ def runtests(*test_args, **kwargs):
 
     if not test_args:
         test_args = ['response_helpers']
-#    parent = dirname(abspath(__file__))
-#    sys.path.insert(0, parent)
+
     failures = run_tests(test_args, verbosity=kwargs.get('verbosity', 1), interactive=kwargs.get('interactive', False), failfast=kwargs.get('failfast'))
     sys.exit(failures)
 
