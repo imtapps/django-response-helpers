@@ -3,6 +3,28 @@ import csv
 from cStringIO import StringIO
 
 from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+
+def render_to_pdf(template_name, context):
+    """
+    a helper to render an html template to a pdf document.
+
+    USAGE:
+    def my_view(request):
+        template_name = "myapp/pdf_template.html"
+        return render_to_pdf(template_name, {'data': 'some_value'})
+    """
+    pdf_stream = StringIO()
+    rendered_template = StringIO(render_to_string(template_name, context).encode("ISO-8859-1"))
+
+    pisa_document = pisa.pisaDocument(rendered_template, pdf_stream)
+    if pisa_document.err:
+        exception_message = "Error creating pdf from html. \r\n"
+        exception_message += "\r\n".join([str(msg) for msg in pisa_document.log])
+        raise Exception(exception_message)
+
+    return HttpResponse(pdf_stream.getvalue(), mimetype='application/pdf')
 
 class CSVResponse(object):
     """
