@@ -2,9 +2,46 @@
 import csv
 from cStringIO import StringIO
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
+from django.template.context import RequestContext
+
 from xhtml2pdf import pisa
+
+def render(template_name, request, context_data=None, response_type=HttpResponse, **kwargs):
+    """
+    renders template to an HttpResponse always giving RequestContext
+    """
+    content = render_to_string(template_name, context_data, context_instance=RequestContext(request))
+    return response_type(content, **kwargs)
+
+def render_to(template_name, response=HttpResponse):
+    """
+    decorator to allow a view to return a dictionary and render
+    the contents to a template as an HttpResponse with RequestContext.
+
+    USAGE:
+    @render_to('myapp/my_template_name.html')
+    def sample_view(response, *args, **kwargs):
+        return {'some': 'data'}
+
+    """
+    def renderer(func):
+        def wrapper(request, *args, **kwargs):
+            """
+            if the view returns something other than a context_data
+            dictionary, maybe the user is returning a redirect or some
+            other response, so we won't try to render to the template.
+            """
+            if not isinstance(request, HttpRequest):
+                raise AssertionError("request is " + request.__class__.__name__ + ". Must be HttpRequest...")
+
+            context_data = func(request, *args, **kwargs)
+            if not isinstance(context_data, dict):
+                return context_data
+            return render(template_name, request, context_data, response)
+        return wrapper
+    return renderer
 
 def render_to_pdf(template_name, context):
     """

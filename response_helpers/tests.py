@@ -150,4 +150,30 @@ class RenderToPdfTests(TestCase):
         pisa_document.return_value.err = None
         response = helpers.render_to_pdf(mock.Mock(), mock.Mock())
         http_response.assert_called_once_with(string_io.return_value.getvalue.return_value, mimetype='application/pdf')
-        self.assertEqual(http_response.return_value, response)            
+        self.assertEqual(http_response.return_value, response)
+
+class RenderTests(TestCase):
+
+    def test_renders_an_http_response_by_default(self):
+        with mock.patch('response_helpers.helpers.render_to_string'):
+            response = helpers.render(None, mock.Mock())
+            self.assertTrue(isinstance(response, helpers.HttpResponse))
+
+    def test_renders_response_type_with_content_and_kwargs(self):
+        with mock.patch('response_helpers.helpers.render_to_string') as render_to_string:
+            kwargs = {'some': 'kwargs'}
+            response_type = mock.Mock()
+            response = helpers.render(None, mock.Mock(), response_type=response_type, **kwargs)
+            self.assertEqual(response_type.return_value, response)
+            response_type.assert_called_once_with(render_to_string.return_value, **kwargs)
+
+    @mock.patch('response_helpers.helpers.RequestContext')
+    def test_gives_template_name_context_and_request_context_to_render_to_string(self, request_context):
+        with mock.patch('response_helpers.helpers.render_to_string') as render_to_string:
+            template_name = "my_template"
+            context_data = mock.sentinel.context
+            request = mock.Mock()
+
+            helpers.render(template_name, request, context_data)
+            render_to_string.assert_called_once_with(template_name, context_data, context_instance=request_context.return_value)
+            request_context.assert_called_once_with(request)
