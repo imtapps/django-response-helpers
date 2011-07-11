@@ -120,5 +120,11 @@ class CSVResponse(object):
         f should be a file like object DictWriter can write to.
         """
         writer = csv.DictWriter(f, fieldnames=self.get_field_names(), extrasaction="ignore")
-        writer.writeheader()
+        # writeheader wasn't added till python 2.7... fall back to
+        # manually write the header if necessary
+        if hasattr(writer, 'writeheader'):
+            writer.writeheader()
+        else:
+            header = dict(zip(writer.fieldnames, writer.fieldnames))
+            writer.writerow(header)
         writer.writerows(self.data_iterable)
