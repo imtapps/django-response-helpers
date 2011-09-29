@@ -5,6 +5,7 @@ from cStringIO import StringIO
 from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
 from django.template.context import RequestContext
+from functools import wraps
 
 from xhtml2pdf import pisa
 
@@ -27,6 +28,7 @@ def render_to(template_name, response=HttpResponse):
 
     """
     def renderer(func):
+        @wraps(func)
         def wrapper(request, *args, **kwargs):
             """
             if the view returns something other than a context_data

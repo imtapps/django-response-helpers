@@ -177,3 +177,13 @@ class RenderTests(TestCase):
             helpers.render(template_name, request, context_data)
             render_to_string.assert_called_once_with(template_name, context_data, context_instance=request_context.return_value)
             request_context.assert_called_once_with(request)
+
+class RenderToTests(TestCase):
+
+    def test_render_to_wraps_function(self):
+
+        @helpers.render_to("")
+        def some_func():
+            pass
+
+        self.assertEqual('some_func', some_func.__name__)
