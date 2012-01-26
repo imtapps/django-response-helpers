@@ -1,18 +1,20 @@
+
 import os
 import re
 from distutils.core import Command, setup
 from setuptools import find_packages
+
 from response_helpers import VERSION
 
 REQUIREMENTS = [
     'django',
-    'xhtml2pdf',
 ]
 TEST_REQUIREMENTS = [
     'mock',
     'django-jenkins',
     'pep8',
     'pyflakes',
+    'xhtml2pdf',
 ]
 
 def do_setup():

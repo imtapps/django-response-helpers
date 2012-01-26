@@ -7,7 +7,6 @@ from django.template.loader import render_to_string
 from django.template.context import RequestContext
 from functools import wraps
 
-from xhtml2pdf import pisa
 
 def render(template_name, request, context_data=None, response_type=HttpResponse, **kwargs):
     """
@@ -54,6 +53,11 @@ def render_to_pdf(template_name, context):
         template_name = "myapp/pdf_template.html"
         return render_to_pdf(template_name, {'data': 'some_value'})
     """
+    # don't import until you really have to so people using this don't need
+    # to install xhtml2pdf and all its dependencies if they don't use it.
+    from xhtml2pdf import pisa
+
+
     pdf_stream = StringIO()
     rendered_template = StringIO(render_to_string(template_name, context).encode("ISO-8859-1"))
 
