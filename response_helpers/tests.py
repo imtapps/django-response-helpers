@@ -106,7 +106,7 @@ if has_xhtml2pdf:
             render_to_string.assert_called_once_with(template, context)
 
         @mock.patch('response_helpers.helpers.StringIO', mock.Mock(spec='cStringIO.StringIO'))
-        @mock.patch('response_helpers.helpers.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
+        @mock.patch('xhtml2pdf.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
         @mock.patch('response_helpers.helpers.render_to_string')
         def test_encodes_rendered_template_with_iso_encoding(self, render_to_string, pisa_document):
             pisa_document.return_value.err = None
@@ -114,7 +114,7 @@ if has_xhtml2pdf:
             helpers.render_to_pdf(mock.Mock(), mock.Mock())
             rendered_template.encode.assert_called_once_with("ISO-8859-1")
 
-        @mock.patch('response_helpers.helpers.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
+        @mock.patch('xhtml2pdf.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
         @mock.patch('response_helpers.helpers.StringIO', spec='cStringIO.StringIO')
         @mock.patch('response_helpers.helpers.render_to_string')
         def test_creates_stringio_with_encoded_rendered_template(self, render_to_string, string_io, pisa_document):
@@ -123,7 +123,7 @@ if has_xhtml2pdf:
             string_io.assert_called_with(render_to_string.return_value.encode.return_value)
 
         @mock.patch('response_helpers.helpers.render_to_string', mock.Mock())
-        @mock.patch('response_helpers.helpers.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
+        @mock.patch('xhtml2pdf.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
         @mock.patch('response_helpers.helpers.StringIO', spec='cStringIO.StringIO')
         def test_creates_pisa_document_from_stringio(self, string_io, pisa_document):
             pdf_stream = mock.Mock()
@@ -140,7 +140,7 @@ if has_xhtml2pdf:
 
         @mock.patch('response_helpers.helpers.render_to_string', mock.Mock())
         @mock.patch('response_helpers.helpers.StringIO', mock.Mock(spec='cStringIO.StringIO'))
-        @mock.patch('response_helpers.helpers.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
+        @mock.patch('xhtml2pdf.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
         def test_raises_exception_when_pdf_error_occurs(self, pisa_document):
             pisa_document.return_value.err = 1
             pisa_document.return_value.log = [('This is an error', 'some_value')]
@@ -149,7 +149,7 @@ if has_xhtml2pdf:
         @mock.patch('response_helpers.helpers.render_to_string', mock.Mock())
         @mock.patch('response_helpers.helpers.HttpResponse', spec='django.http.HttpResponse')
         @mock.patch('response_helpers.helpers.StringIO', spec='cStringIO.StringIO')
-        @mock.patch('response_helpers.helpers.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
+        @mock.patch('xhtml2pdf.pisa.pisaDocument', spec="xhtml2pdf.pisa.pisaDocument")
         def test_returns_http_response_with_pdf_and_mimetype(self, pisa_document, string_io, http_response):
             pisa_document.return_value.err = None
             response = helpers.render_to_pdf(mock.Mock(), mock.Mock())
