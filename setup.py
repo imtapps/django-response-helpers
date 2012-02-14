@@ -9,8 +9,9 @@ from response_helpers import VERSION
 REQUIREMENTS = [
     'django',
 ]
+
 TEST_REQUIREMENTS = [
-    'mock',
+    'mock>=0.8.0',
     'django-jenkins',
     'pep8',
     'pyflakes',

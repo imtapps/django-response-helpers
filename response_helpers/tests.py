@@ -1,5 +1,6 @@
 
 import mock
+import datetime
 
 from django.test import TestCase
 
@@ -50,9 +51,8 @@ class CSVResponseTests(TestCase):
             response = csv_response.response
             self.assertEqual(csv_data, response.content)
 
-
     @mock.patch('response_helpers.helpers.CSVResponse._write_csv_contents', mock.Mock())
-    @mock.patch('response_helpers.helpers.StringIO', spec='cStringIO.StringIO')
+    @mock.patch('response_helpers.helpers.StringIO', autospec=True)
     def test_closes_string_io_object_in_create_csv(self, string_io):
         io_object = string_io.return_value
         csv_response = helpers.CSVResponse([])
@@ -209,3 +209,22 @@ class JSONResponseTests(TestCase):
         expected = {'this': "thing", 'other': 2}
         response = http.JSONResponse(expected)
         self.assertEqual('{"this": "thing", "other": 2}', response.content)
+
+    def test_property_translates_dates_into_json(self):
+        date = datetime.date.today()
+        expected = {'this': "thing", 'date': date}
+        response = http.JSONResponse(expected)
+        self.assertEqual('{"this": "thing", "date": "' + str(date) + '"}', response.content)
+
+    def test_property_translates_times_into_json(self):
+        time = datetime.time()
+        expected = {'this': "thing", 'time': time}
+        response = http.JSONResponse(expected)
+        self.assertEqual('{"this": "thing", "time": "' + str(time) + '"}', response.content)
+
+    def test_property_translates_datetimes_into_json(self):
+        dt = datetime.datetime(year=2011, month=01, day=01, hour=10, minute=10, second=10)
+        expected = {'this': "thing", 'datetime': dt}
+        response = http.JSONResponse(expected)
+        self.assertEqual('{"this": "thing", "datetime": "' + str(dt) + '"}', response.content)
+
