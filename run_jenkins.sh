@@ -24,6 +24,6 @@ python example/manage.py jenkins --output-dir=jenkins_reports
 test_result=$?
 
 deactivate
-rmvirtualenv $VIRTUALENV_NAME
+#rmvirtualenv $VIRTUALENV_NAME
 
 exit $test_result
