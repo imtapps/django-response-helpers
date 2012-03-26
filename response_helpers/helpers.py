@@ -44,19 +44,10 @@ def render_to(template_name, response=HttpResponse):
         return wrapper
     return renderer
 
-def render_to_pdf(template_name, context):
-    """
-    a helper to render an html template to a pdf document.
-
-    USAGE:
-    def my_view(request):
-        template_name = "myapp/pdf_template.html"
-        return render_to_pdf(template_name, {'data': 'some_value'})
-    """
+def get_pdf_stream(template_name, context):
     # don't import until you really have to so people using this don't need
     # to install xhtml2pdf and all its dependencies if they don't use it.
     from xhtml2pdf import pisa
-
 
     pdf_stream = StringIO()
     rendered_template = StringIO(render_to_string(template_name, context).encode("ISO-8859-1"))
@@ -67,6 +58,18 @@ def render_to_pdf(template_name, context):
         exception_message += "\r\n".join([str(msg) for msg in pisa_document.log])
         raise Exception(exception_message)
 
+    return pdf_stream
+
+def render_to_pdf(template_name, context):
+    """
+    a helper to render an html template to a pdf document.
+
+    USAGE:
+    def my_view(request):
+        template_name = "myapp/pdf_template.html"
+        return render_to_pdf(template_name, {'data': 'some_value'})
+    """
+    pdf_stream = get_pdf_stream(template_name, context)
     return HttpResponse(pdf_stream.getvalue(), mimetype='application/pdf')
 
 class CSVResponse(object):
