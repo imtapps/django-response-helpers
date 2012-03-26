@@ -13,6 +13,8 @@ REQUIREMENTS = [
 TEST_REQUIREMENTS = [
     'mock>=0.8.0',
     'django-jenkins',
+    'pylint',
+    'coverage',
     'pep8',
     'pyflakes',
     'xhtml2pdf',
