@@ -226,5 +226,10 @@ class JSONResponseTests(TestCase):
         dt = datetime.datetime(year=2011, month=01, day=01, hour=10, minute=10, second=10)
         expected = {'this': "thing", 'datetime': dt}
         response = http.JSONResponse(expected)
-        self.assertEqual('{"this": "thing", "datetime": "' + str(dt) + '"}', response.content)
+        from django import VERSION
+        if VERSION[:2] == (1, 4):
+            formatted_dt = dt.isoformat()
+        else:
+            formatted_dt = str(dt)
+        self.assertEqual('{"this": "thing", "datetime": "' + formatted_dt + '"}', response.content)
 
