@@ -129,22 +129,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_nose',
 ) + PROJECT_APPS
 
-try:
-    import django_jenkins
-
-    INSTALLED_APPS += ('django_jenkins',)
-    JENKINS_TASKS = (
-        'django_jenkins.tasks.django_tests',
-        'django_jenkins.tasks.run_pylint',
-        'django_jenkins.tasks.run_pep8',
-        'django_jenkins.tasks.run_pyflakes',
-        'django_jenkins.tasks.with_coverage',
-    )
-
-except ImportError:
-    pass
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
