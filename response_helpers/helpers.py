@@ -50,7 +50,7 @@ def get_pdf_stream(template_name, context):
     from xhtml2pdf import pisa
 
     pdf_stream = StringIO()
-    rendered_template = StringIO(render_to_string(template_name, context).encode("ISO-8859-1"))
+    rendered_template = StringIO(render_to_string(template_name, context).encode("UTF-16"))
 
     pisa_document = pisa.pisaDocument(rendered_template, pdf_stream)
     if pisa_document.err:

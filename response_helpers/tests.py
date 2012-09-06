@@ -112,7 +112,7 @@ if has_xhtml2pdf:
             pisa_document.return_value.err = None
             rendered_template = render_to_string.return_value = mock.MagicMock()
             helpers.render_to_pdf(mock.Mock(), mock.Mock())
-            rendered_template.encode.assert_called_once_with("ISO-8859-1")
+            rendered_template.encode.assert_called_once_with("UTF-16")
 
         @mock.patch('xhtml2pdf.pisa.pisaDocument', autospec=True)
         @mock.patch('response_helpers.helpers.StringIO', autospec=True)
