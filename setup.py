@@ -6,7 +6,7 @@ from setuptools import find_packages
 from response_helpers import VERSION
 
 REQUIREMENTS = [
-    'django<1.5.0',
+    'django>=1.5,<1.6',
 ]
 
 TEST_REQUIREMENTS = [
