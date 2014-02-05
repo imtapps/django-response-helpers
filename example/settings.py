@@ -118,6 +118,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    join(parent, 'templates'),
 )
 
 PROJECT_APPS = ('response_helpers', )
@@ -143,16 +144,22 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
+        'dummy_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/asdf.log',
         }
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
+        'xhtml2pdf': {
+            'level': 'ERROR'
         },
+        'django.request': {
+            'level': 'ERROR',
+        },
+        'response_helpers': {
+            'level': 'DEBUG',
+            'handlers': ['dummy_handler'],
+        }
     }
 }

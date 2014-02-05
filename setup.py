@@ -3,8 +3,6 @@ import re
 from distutils.core import Command, setup
 from setuptools import find_packages
 
-from response_helpers import VERSION
-
 REQUIREMENTS = [
     'django>=1.5,<1.6',
 ]
@@ -22,7 +20,7 @@ TEST_REQUIREMENTS = [
 def do_setup():
     setup(
         name="django-response-helpers",
-        version=VERSION,
+        version='1.0.0',
         author="Aaron Madison",
         author_email="aaron.l.madison@gmail.com",
         description="A helper application for working with Django Responses",

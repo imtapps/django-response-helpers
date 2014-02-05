@@ -1,4 +1,4 @@
-
+import logging
 import csv
 from cStringIO import StringIO
 
@@ -50,9 +50,11 @@ def get_pdf_stream(template_name, context):
     from xhtml2pdf import pisa
 
     pdf_stream = StringIO()
-    rendered_template = StringIO(render_to_string(template_name, context).encode("UTF-16"))
+    rendered_template = render_to_string(template_name, context)
+    logger = logging.getLogger('response_helpers')
+    logger.debug(rendered_template)
 
-    pisa_document = pisa.pisaDocument(rendered_template, pdf_stream)
+    pisa_document = pisa.pisaDocument(StringIO(rendered_template.encode("UTF-16")), pdf_stream)
     if pisa_document.err:
         exception_message = "Error creating pdf from html. \r\n"
         exception_message += "\r\n".join([str(msg) for msg in pisa_document.log])
