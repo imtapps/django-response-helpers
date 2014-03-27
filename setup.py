@@ -12,7 +12,8 @@ TEST_REQUIREMENTS = [
     'coverage',
     'pep8',
     'pyflakes',
-    'xhtml2pdf',
+    'xhtml2pdf==0.0.2.12-IMT',
+    'reportlab==2.5.1',
     'django_nose',
     'nosexcover',
 ]
