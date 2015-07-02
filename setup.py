@@ -21,7 +21,7 @@ TEST_REQUIREMENTS = [
 def do_setup():
     setup(
         name="django-response-helpers",
-        version='1.0.0',
+        version='1.0.1',
         author="Aaron Madison",
         author_email="aaron.l.madison@gmail.com",
         description="A helper application for working with Django Responses",
