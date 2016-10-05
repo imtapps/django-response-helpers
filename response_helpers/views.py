@@ -1,7 +1,7 @@
 
 import csv
-import cStringIO as StringIO
 
+from django.utils.six import StringIO
 from django.views.generic import View
 
 from response_helpers.http import CSVResponse
@@ -21,7 +21,7 @@ class CSVResponseView(View):
         return self.field_names
 
     def get(self, request, *args, **kwargs):
-        csvfile = StringIO.StringIO()
+        csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, self.get_field_names(), extrasaction="ignore")
 
         csvwriter.writerow(self.get_header_row())
