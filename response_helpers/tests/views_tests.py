@@ -1,5 +1,6 @@
 
 from django import test
+from django.utils.six import StringIO
 from django.views.generic import View
 
 from response_helpers import views
@@ -49,8 +50,6 @@ class CSVResponseViewTests(test.TestCase):
         }, header_row)
 
     def test_get_method_returns_csv_of_data_as_content(self):
-        from cStringIO import StringIO
-
         request = test.RequestFactory().get("/")
         sut = SampleCSVResponse()
         sut.field_names = ["first_field", "second_field"]
@@ -58,9 +57,7 @@ class CSVResponseViewTests(test.TestCase):
 
         s = StringIO()
         for i in response.streaming_content:
-            s.write(i)
+            s.write(i.decode("utf-8"))
 
         self.assertEqual(
-            "first_field,second_field\r\n"
-            "one,two\r\n"
-            "second_one,second_two\r\n", s.getvalue())
+            "first_field,second_field\r\none,two\r\nsecond_one,second_two\r\n", s.getvalue())

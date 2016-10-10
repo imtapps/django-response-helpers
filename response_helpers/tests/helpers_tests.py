@@ -43,7 +43,7 @@ class CSVHelperResponseTests(TestCase):
 
     def test_sets_response_content_to_csv_data(self):
         with mock.patch('response_helpers.helpers.CSVResponse._create_csv') as create_csv:
-            csv_data = "some,csv\r\ndata,here\r\n"
+            csv_data = b"some,csv\r\ndata,here\r\n"
             create_csv.return_value = csv_data
             csv_response = helpers.CSVResponse([])
 
@@ -51,7 +51,7 @@ class CSVHelperResponseTests(TestCase):
             self.assertEqual(csv_data, response.content)
 
     @mock.patch('response_helpers.helpers.CSVResponse._write_csv_contents', mock.Mock())
-    @mock.patch('response_helpers.helpers.StringIO', autospec=True)
+    @mock.patch('response_helpers.helpers.StringIO')
     def test_closes_string_io_object_in_create_csv(self, string_io):
         io_object = string_io.return_value
         csv_response = helpers.CSVResponse([])

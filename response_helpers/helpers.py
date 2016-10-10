@@ -1,6 +1,5 @@
-import logging
 import csv
-from cStringIO import StringIO
+from django.utils.six import StringIO
 
 from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
@@ -14,6 +13,7 @@ def render(template_name, request, context_data=None, response_type=HttpResponse
     """
     content = render_to_string(template_name, context_data, context_instance=RequestContext(request))
     return response_type(content, **kwargs)
+
 
 def render_to(template_name, response=HttpResponse):
     """
@@ -44,35 +44,6 @@ def render_to(template_name, response=HttpResponse):
         return wrapper
     return renderer
 
-def get_pdf_stream(template_name, context):
-    # don't import until you really have to so people using this don't need
-    # to install xhtml2pdf and all its dependencies if they don't use it.
-    from xhtml2pdf import pisa
-
-    pdf_stream = StringIO()
-    rendered_template = render_to_string(template_name, context)
-    logger = logging.getLogger('response_helpers')
-    logger.debug(rendered_template)
-
-    pisa_document = pisa.pisaDocument(StringIO(rendered_template.encode("UTF-16")), pdf_stream)
-    if pisa_document.err:
-        exception_message = "Error creating pdf from html. \r\n"
-        exception_message += "\r\n".join([str(msg) for msg in pisa_document.log])
-        raise Exception(exception_message)
-
-    return pdf_stream
-
-def render_to_pdf(template_name, context):
-    """
-    a helper to render an html template to a pdf document.
-
-    USAGE:
-    def my_view(request):
-        template_name = "myapp/pdf_template.html"
-        return render_to_pdf(template_name, {'data': 'some_value'})
-    """
-    pdf_stream = get_pdf_stream(template_name, context)
-    return HttpResponse(pdf_stream.getvalue(), mimetype='application/pdf')
 
 class CSVResponse(object):
     """
