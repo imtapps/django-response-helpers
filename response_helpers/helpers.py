@@ -1,4 +1,3 @@
-import logging
 import csv
 from django.utils.six import StringIO
 
@@ -14,6 +13,7 @@ def render(template_name, request, context_data=None, response_type=HttpResponse
     """
     content = render_to_string(template_name, context_data, context_instance=RequestContext(request))
     return response_type(content, **kwargs)
+
 
 def render_to(template_name, response=HttpResponse):
     """
@@ -44,11 +44,6 @@ def render_to(template_name, response=HttpResponse):
         return wrapper
     return renderer
 
-def get_pdf_stream(template_name, context):
-    raise NotImplementedError("Hey there Vector... you can't use this any more.'")
-
-def render_to_pdf(template_name, context):
-    raise NotImplementedError("Hey there Vector... you can't use this any more.'")
 
 class CSVResponse(object):
     """
