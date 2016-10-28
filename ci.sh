@@ -12,9 +12,11 @@ virtualenv $VIRTUALENV_NAME
 . $VIRTUALENV_NAME/bin/activate
 
 find . -name "*.pyc" -delete
-python setup.py install_dev
+pip install tox
 
-python example/manage.py test --with-xunit --with-xcover --cover-package=response_helpers
+rm -rf reports
+mkdir reports
+tox
 TEST_EXIT=$?
 rm -rf jenkins_reports
 mkdir jenkins_reports

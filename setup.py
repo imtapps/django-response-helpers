@@ -1,77 +1,27 @@
-import os
-import re
-from distutils.core import Command, setup
+from distutils.core import setup
 from setuptools import find_packages
 
-REQUIREMENTS = [
-    'django>=1.5,<1.9',
-]
 
-TEST_REQUIREMENTS = [
-    'mock>=0.8.0',
-    'coverage',
-    'pep8',
-    'pyflakes',
-    'reportlab==3.2.0',
-    'django_nose',
-    'nosexcover',
-]
-
-def do_setup():
-    setup(
-        name="django-response-helpers",
-        version='2.0.0',
-        author="Aaron Madison",
-        author_email="aaron.l.madison@gmail.com",
-        description="A helper application for working with Django Responses",
-        long_description=open('README.txt', 'r').read(),
-        url="https://github.com/imtapps/django-response-helpers",
-        packages=find_packages(exclude=['example']),
-        install_requires=REQUIREMENTS,
-        tests_require=TEST_REQUIREMENTS,
-        zip_safe=False,
-        classifiers = [
-            "Development Status :: 3 - Alpha",
-            "Environment :: Web Environment",
-            "Framework :: Django",
-            "Intended Audience :: Developers",
-            "License :: OSI Approved :: BSD License",
-            "Operating System :: OS Independent",
-            "Programming Language :: Python",
-            "Topic :: Software Development",
-            "Topic :: Software Development :: Libraries :: Application Frameworks",
-        ],
-        cmdclass={
-            'install_dev':InstallDependencies,
-        }
-    )
-
-class InstallDependencies(Command):
-    """
-    Command to install both develop dependencies and test dependencies.
-
-    Not sure why we can't find a built in command to do that already
-    in an accessible way.
-    """
-
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def get_test_dependencies(self):
-        """
-        replace all > or < in the dependencies so the system does not
-        try to redirect stdin or stdout from/to a file.
-        """
-        command_line_deps = ' '.join(TEST_REQUIREMENTS + REQUIREMENTS)
-        return re.sub(re.compile(r'([<>])'), r'\\\1', command_line_deps)
-
-    def run(self):
-        os.system("pip install %s" % self.get_test_dependencies())
-
-if __name__ == '__main__':
-    do_setup()
+setup(
+    name="django-response-helpers",
+    version='2.0.0',
+    author="Aaron Madison",
+    author_email="aaron.l.madison@gmail.com",
+    description="A helper application for working with Django Responses",
+    long_description=open('README.txt', 'r').read(),
+    url="https://github.com/imtapps/django-response-helpers",
+    packages=find_packages(exclude=['example']),
+    install_requires=open('requirements/dist.txt').read().split("\n"),
+    tests_require=open('requirements/ci.txt').read().split("\n"),
+    zip_safe=False,
+    classifiers=[
+        "Environment :: Web Environment",
+        "Framework :: Django",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Topic :: Software Development",
+        "Topic :: Software Development :: Libraries :: Application Frameworks",
+    ],
+)
