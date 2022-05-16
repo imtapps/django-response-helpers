@@ -1,5 +1,6 @@
 
 import datetime
+import json
 
 from django import test
 from django.http import StreamingHttpResponse
@@ -17,35 +18,34 @@ class JSONResponseTests(test.TestCase):
     def test_returns_string_of_content_when_given_string(self):
         expected = '{this: "thing"}'
         response = http.JSONResponse(expected)
-        self.assertEqual(expected, response.content)
+        self.assertEqual(expected, response.content.decode())
 
     def test_turns_object_into_json_string_when_given_object_as_content(self):
         expected = {'this': "thing", 'other': 2}
         response = http.JSONResponse(expected)
-        self.assertEqual('{"this": "thing", "other": 2}', response.content)
+        self.assertEqual(json.loads('{"this": "thing", "other": 2}'), json.loads(response.content.decode()))
 
     def test_properly_translates_dates_into_json(self):
         date = datetime.date.today()
         expected = {'this': "thing", 'date': date}
         response = http.JSONResponse(expected)
-        self.assertEqual('{"this": "thing", "date": "' + str(date) + '"}', response.content)
+        self.assertEqual(json.loads('{"this": "thing", "date": "' + str(date) + '"}'),
+                         json.loads(response.content.decode()))
 
     def test_properly_translates_times_into_json(self):
         time = datetime.time()
         expected = {'this': "thing", 'time': time}
         response = http.JSONResponse(expected)
-        self.assertEqual('{"this": "thing", "time": "' + str(time) + '"}', response.content)
+        self.assertEqual(json.loads('{"this": "thing", "time": "' + str(time) + '"}'),
+                         json.loads(response.content.decode()))
 
     def test_properly_translates_datetimes_into_json(self):
-        dt = datetime.datetime(year=2011, month=01, day=01, hour=10, minute=10, second=10)
+        dt = datetime.datetime(year=2011, month=1, day=1, hour=10, minute=10, second=10)
         expected = {'this': "thing", 'datetime': dt}
         response = http.JSONResponse(expected)
-        from django import VERSION
-        if VERSION[:2] in [(1, 4), (1, 5)]:
-            formatted_dt = dt.isoformat()
-        else:
-            formatted_dt = str(dt)
-        self.assertEqual('{"this": "thing", "datetime": "' + formatted_dt + '"}', response.content)
+        formatted_dt = dt.isoformat()
+        self.assertEqual(json.loads('{"this": "thing", "datetime": "' + formatted_dt + '"}'),
+                         json.loads(response.content.decode()))
 
 
 class CSVResponseTests(test.TestCase):
